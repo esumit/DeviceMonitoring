@@ -1,0 +1,2 @@
+# DeviceMonitoring
+DeviceMonitor audits running applications in a device (e.g. ubuntu desktop, android device, mac machine) with the help of DeviceManager who manage devices. DeviceManager get the audit information from the DeviceDaemon(running inside the device, responsible to collect the running application information in a specified time interval). If Device-Monitor finds any suspicious activity on that device, then it alerts to the authorized user of that device.
