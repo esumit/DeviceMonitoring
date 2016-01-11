@@ -1,0 +1,91 @@
+#header {
+    background-color:black;
+    color:white;
+    text-align:center;
+    padding:5px;
+}
+#h1tag {
+    color:blue;
+    font-family:verdana;
+    font-size:300%;
+    text-align:center;
+}
+#nav {
+    line-height:50px;
+    background-color:#eeeeee;
+    height:500px;
+    width:100px;
+    float:left;
+    padding:5px;	      
+}
+
+#nav1 {
+    line-height:50px;
+    background-color:#eeeeee;
+    height:500px;
+    width:100px;
+    float:left;
+    padding:5px;	      
+}
+#section1 {
+    width:450px;
+    float:left;
+    padding:10px;
+    color:green;
+    	 	 
+}
+
+#section2 {
+    width:450px;
+    float:left;
+    padding:10px; 
+    color:red;   
+      
+}
+
+#section3 {
+    width:900px;
+    float:left;
+    padding:100px;
+    color:green; 
+    border:2px #666666 double;        
+}
+
+#buttontype1 {
+     width:450px;
+    float:left;
+    padding:10px; 
+    color:green; 
+    font-size:24px; 
+    border:2px #666666 double;
+
+
+}
+
+#buttontype2 {
+    width:450px;
+    float:left;
+    padding:10px; 
+    color:red;    
+    border:2px #666666 double;  
+    font-size:24px;   
+}
+
+#test{
+    width:30px;
+    height:30px;
+    background:red;
+    position:absolute;
+    left:20px;
+    top:20px;
+}
+
+
+
+#footer {
+    background-color:black;
+    color:white;
+    clear:both;
+    text-align:center;
+   padding:5px;	 	 
+}
