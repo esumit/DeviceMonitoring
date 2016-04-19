@@ -1,3 +1,5 @@
+![alt tag](http://media.hiringlibrary.com.s3.amazonaws.com/wp-content/uploads/17045321/How-DeviceMonitor-Works.png)
+
 # DeviceMonitoring
 DeviceMonitor audits running applications in a device (e.g. ubuntu desktop, android device, mac machine) with the help of DeviceManager who manage devices. DeviceManager get the audit information from the DeviceDaemon(running inside the device, responsible to collect the running application information in a specified time interval). If Device-Monitor finds any suspicious activity on that device, then it alerts to the authorized user of that device.
 
@@ -50,3 +52,5 @@ Now Device Manager getting the DeviceInfo.json from DeviceDaemon and inserting i
 Step-4 : Go to DeviceMonitor folder – Type : mvn clean install, and then go to its target folder and Type : mvn tomcat7:run
 
 (to configure IP and port, go to its config.properties file)
+
+![alt tag](http://media.hiringlibrary.com.s3.amazonaws.com/wp-content/uploads/17045133/All-Four-Process-are-Running.png)
