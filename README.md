@@ -55,3 +55,28 @@ Step-4 : Go to DeviceMonitor folder – Type : mvn clean install, and then go to
 (to configure IP and port, go to its config.properties file)
 
 ![alt tag](http://media.hiringlibrary.com.s3.amazonaws.com/wp-content/uploads/17045133/All-Four-Process-are-Running.png)
+
+// Open the browser
+Step-5 : Open the browser e.g. chrome or safari , type : http://localhost:8080/ 
+5.1 It will show Device-Monitor.html as below :
+
+5.2 Click ‘Start’ button – It will start fetching the records from database and change the Stop button to ‘Stop it If you want’ 
+
+5.3 Scroll Down to See the Device’s Process details:
+
+A process shows red if it is harmful for the system (dummy at this time, randomly picked some process as harmful process). 
+
+A process shows green if its normal process.
+
+
+Technology Used:
+
+OS  Used : Mac OS X,10.10.1, x86_64
+Languages : Java , JavaScript, CSS,JavaScript
+Framework/Server : Apache CXF, Spring, Tomcat Container
+Database : MongoDB
+
+
+
+
+
