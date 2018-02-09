@@ -60,7 +60,11 @@ Step-4 : Go to DeviceMonitor folder – Type : mvn clean install, and then go to
 Step-5 : Open the browser e.g. chrome or safari , type : http://localhost:8080/ 
 5.1 It will show Device-Monitor.html as below :
 
+![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitoring_MainPage.png)
+
 5.2 Click ‘Start’ button – It will start fetching the records from database and change the Stop button to ‘Stop it If you want’ 
+
+![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitoringWithDetails.png)
 
 5.3 Scroll Down to See the Device’s Process details:
 
@@ -68,6 +72,12 @@ A process shows red if it is harmful for the system (dummy at this time, randoml
 
 A process shows green if its normal process.
 
+![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitor_DeviceStatus.png)
+
+
+Code Structure
+
+![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitor_CodeStructure.png)
 
 Technology Used:
 
