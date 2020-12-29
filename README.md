@@ -1,5 +1,15 @@
 # DeviceMonitoring
-DeviceMonitor (A Full Stack Application) audits running applications in a device (e.g. ubuntu desktop, android device, mac machine) with the help of DeviceManager who manage devices. DeviceManager get the audit information from the DeviceDaemon(running inside the device, responsible to collect the running application information in a specified time interval). If Device-Monitor finds any suspicious activity on that device, then it alerts to the authorized user of that device.
+DeviceMonitoring is a conceptual full stack web application which audits running processes in a computing device (e.g. ubuntu desktop, android device, mac machine). 
+
+It has been divided in three parts :
+
+1. DeviceMonitor - Presentation part, UI have html,css, js code 
+
+2. DeviceDaemon -  An auditorrunning in a device. It responsible to collect the processes information in a specified time interval
+
+3. DeviceManager - It fetches audit information from the DeviceDaemon. If Device-Monitor finds any suspicious activity on that device, then it alerts the red flag on the UI
+
+4. DB - Mongo DB used to store the persistance
 
 ![alt tag](http://media.hiringlibrary.com.s3.amazonaws.com/wp-content/uploads/17045321/How-DeviceMonitor-Works.png)
 
