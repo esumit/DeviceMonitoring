@@ -1,7 +1,7 @@
 # DeviceMonitoring
 DeviceMonitoring is a conceptual full stack web application which audits running processes in a computing device (e.g. ubuntu desktop, android device, mac machine). 
 
-It has been divided in three parts :
+It has been divided in four parts :
 
 1. DeviceMonitor - Presentation part, UI have html,css, js code 
 
