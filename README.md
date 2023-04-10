@@ -1,95 +1,92 @@
 # DeviceMonitoring
-DeviceMonitoring is a conceptual full stack web application which audits running processes in a computing device (e.g. ubuntu desktop, android device, mac machine). 
+DeviceMonitoring is a comprehensive full-stack web application designed to monitor and audit running processes across various computing devices, 
+including Ubuntu desktops, Android devices, and Mac machines. 
 
-It has been divided in four parts :
+![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/device-monitor-context.png)
 
-1. DeviceMonitor - Presentation part, UI have html,css, js code 
+The project is divided into four components:
 
-2. DeviceDaemon -  An auditorrunning in a device. It responsible to collect the processes information in a specified time interval
 
-3. DeviceManager - It fetches audit information from the DeviceDaemon. If Device-Monitor finds any suspicious activity on that device, then it alerts the red flag on the UI
+1. DeviceMonitor: This is the presentation layer that consists of the user interface, built using HTML, CSS, and JavaScript. It displays the monitored data for the user's convenience. 
 
-4. DB - Mongo DB used to store the persistance
+2. DeviceDaemon: This component is an auditor running on each monitored device. It is responsible for gathering information about the device's running processes at specified time intervals.
 
-![alt tag](http://media.hiringlibrary.com.s3.amazonaws.com/wp-content/uploads/17045321/How-DeviceMonitor-Works.png)
+3. DeviceManager - This component communicates with DeviceDaemon to retrieve the audit data. If DeviceMonitor detects any suspicious activities on a device, it raises a red flag in the user interface to alert the user.
+
+4. DB - MongoDB is utilized for storing persistent data related to the application, including the monitored processes and their respective information
+
+![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/How-DeviceMonitor-Works.png)
 
 
 # Flow of Device Monitoring
 
-DeviceDaemon: – Device Daemon is a TCP server, it waits for DeviceInfo request to receive. Once It receive the request, It calls to DeviceWorker(a new thread) which in turn call DaemonHelper. That DaemonHelper executes a perl script or ‘ps axo ppid,pid,command’ to get the details info about the ‘process’ running in that device. It parses the received ‘process information’ and converts into a Linked List of process.
+**DeviceDaemon**: The Device Daemon is a TCP server that waits for incoming DeviceInfo requests. Upon receiving a request, it initiates a DeviceWorker (a new thread) which in turn calls the DaemonHelper. The DaemonHelper executes a Perl script or runs the command 'ps axo ppid,pid,command' to obtain detailed information about the processes running on the device. This information is parsed and converted into a linked list of processes.
 
+The DeviceProcessToJsonConverter processes this LinkedList of processes. It organizes the received list of nodes into the correct parent/child tree structure and converts it into a JSON file, DeviceInfo.json. The converter also adds additional information to this file, such as device time, address, and OS details. Once the DeviceInfo.json is ready, the DeviceWorker sends it to the DeviceManager and terminates its thread.
 
- 
-This LinkedList of process processed by the DeviceProcessToJsonConverter. It parses the received list of nodes, put into right parent/child tree order and then converts into a json file DeviceInfo.json. It also adds additional information into this file e.g. Device Time, Address,OS Details.
-Once the DeviceInfo.json got prepared then DeviceWorker send this DeviceInfo.json to DeviceManager and terminate its thread.
+**DeviceManager**: The DeviceManager runs a TCP client in a separate thread. At a configurable time interval (default is every minute), it sends a DeviceInfo request to the DeviceDaemon. The DeviceDaemon responds with the DeviceInfo.json file, which the DeviceManager then maps to a DeviceInfo object. Additional information, such as the time the information was received, is added to produce a DeviceInfoDB object. This object is converted into JSON format and inserted into the MongoDB collection named 'DeviceInfo'.
 
- 
-
-DeviceManager: DeviceManager runs TCP client in a thread. In every minute (time is configurable), it sends a DeviceInfo request to DeviceDameon. That DeviceDameon receives the request and return the DeviceInfo.json to DeviceManager. DeviceManager receives DeviceInfo.json file, then it maps DeviceInfo.json to a DeviceInfo Object and adds additional information e.g. time it received the info and produce DeviceInfoDB Object. After that it converts DeviceInfoDB Object into Json and then insert it to MongDB’s collection -name -‘DeviceInfo’.
-
-Device-Monitor Web Service: This Web Service runs inside the Catalina container, deployed as a REST based web service. The URL of this GET is: http://localhost:8080/device-monitor/device/getdeviceinfo. Internally it call the getDeviceInfo API, which in turn access the DeviceInfo MongoDB database ,fetches the latest DeviceInfo Record and then return to caller as a JSON response.
-
+**Device-Monitor Web Service**: This web service runs within the Catalina container and is deployed as a REST-based web service. The URL for this GET request is: http://localhost:8080/device-monitor/device/getdeviceinfo. Internally, it calls the getDeviceInfo API, which accesses the DeviceInfo MongoDB database, fetches the latest DeviceInfo record, and returns it to the caller as a JSON response.
 Device-Monitor Display: It contains following things :
 
-Device-Monitor.html – On call to http://localhost:8080 , browser fetches this file and display on the browser with ‘Start’ and ‘Stop’ Button.
+**Device-Monitor Display**: The display component includes the following elements:
 
-Devicemonitor.js: On click to start, it sends getDeviceInfo GET request (on every 60 seconds) to the webservice( as explained above) and receives the DeviceInfo.json file. It parses this file and display the information on Browser.
+- Device-Monitor.html: When the user accesses http://localhost:8080, the browser retrieves this file and displays it with 'Start' and 'Stop' buttons.
+- Devicemonitor.js: When the user clicks the 'Start' button, the script sends a getDeviceInfo GET request (every 60 seconds) to the web service (as described above) and receives the DeviceInfo.json file. The script parses this file and displays the information in the browser.
 
 
-# How overall flow will work ?
+# Overall Workflow Guide
 
 [Assumption : Java/Maven/MongoDB installed on the machine]
 
- // Run MongoDB 
+![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/device-monitor-workflow.png)
 
- Step-1 : Start MongoDB Server, Create a Database name ‘DeviceInfo’ and collection deviceInfo.
+##### Step-1 Run MongoDB 
 
- // Run DeviceDameon 
+- Start the MongoDB server.
+- Create a database named 'DeviceInfo' and a collection called 'deviceInfo'.
 
-Step-2 : Go to DeviceDaemon folder – Type : mvn clean install, and then go to its target folder and Type : java -jar device-daemon.jar
+##### Step-2 Run DeviceDameon
 
-(to configure IP and port, go to its config.properties file)
-
-// Run DeviceManager
-
-Step-3 : Go to DeviceManager folder – Type : mvn clean install, and then go to its target folder and Type : java -jar device-manager.jar
-
-(to configure IP and port, go to its config.properties file)
-
-Now Device Manager getting the DeviceInfo.json from DeviceDaemon and inserting into the DeviceInfo database of MongoDB.
-
-// Once both are running, then run the WebService
-
-Step-4 : Go to DeviceMonitor folder – Type : mvn clean install, and then go to its target folder and Type : mvn tomcat7:run
-
-(to configure IP and port, go to its config.properties file)
-
-![alt tag](http://media.hiringlibrary.com.s3.amazonaws.com/wp-content/uploads/17045133/All-Four-Process-are-Running.png)
-
-// Open the browser
-Step-5 : Open the browser e.g. chrome or safari , type : http://localhost:8080/ 
-5.1 It will show Device-Monitor.html as below :
-
-![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitoring_MainPage.png)
-
-5.2 Click ‘Start’ button – It will start fetching the records from database and change the Stop button to ‘Stop it If you want’ 
-
-![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitoringWithDetails.png)
-
-5.3 Scroll Down to See the Device’s Process details:
-
-A process shows red if it is harmful for the system (dummy at this time, randomly picked some process as harmful process). 
-
-A process shows green if its normal process.
-
-![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitor_DeviceStatus.png)
+- Navigate to the DeviceDaemon folder.
+- Type mvn clean install, then go to the target folder and type java -jar device-daemon.jar.
+(To configure IP and port, edit the config.properties file.)
 
 
-Code Structure
+##### Step-3 Run DeviceManager
+- Navigate to the DeviceManager folder.
+- Type mvn clean install, then go to the target folder and type java -jar device-manager.jar.
+(To configure IP and port, edit the config.properties file.)
+- Now, DeviceManager retrieves the DeviceInfo.json from DeviceDaemon and inserts it into the DeviceInfo MongoDB database.
+
+
+#### Step-4 - Run the WebService
+
+- Navigate to the DeviceMonitor folder.
+- Type mvn clean install, then go to the target folder and type mvn tomcat7:run.
+(To configure IP and port, edit the config.properties file.)
+
+![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/All-Four-Process-are-Running.png)
+
+#### Step-5 - Open the browser
+- Open a browser (e.g., Chrome or Safari) and type http://localhost:8080/.
+- This will display the Device-Monitor.html page.
+  - ![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitoring_MainPage.png)
+- Click the 'Start' button to begin fetching records from the database. The button text will change to 'Stop it If you want'.
+  - https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitoringWithDetails.png
+- Scroll down to see the device's process details. Processes are color-coded:
+  - Red indicates a harmful process (currently dummy data; some processes are randomly selected as harmful).
+    - ![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitor_DeviceStatus.png)
+  - Green indicates a normal process.
+    - ![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitor_DeviceStatus.png)
+
+
+
+#### Code Structure
 
 ![alt tag](https://github.com/esumit/DeviceMonitoring/blob/master/Images/DeviceMonitor_CodeStructure.png)
 
-Technology Used:
+#### Technology Used:
 
 OS  Used : Mac OS X,10.10.1, x86_64
 Languages : Java , JavaScript, CSS,JavaScript
