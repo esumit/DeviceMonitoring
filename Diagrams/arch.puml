@@ -1,0 +1,13 @@
+@startuml
+actor User
+component "DeviceMonitor\n(Presentation Layer)" as DeviceMonitor
+component "DeviceDaemon\n(Auditor)" as DeviceDaemon
+component "DeviceManager\n(Data Manager)" as DeviceManager
+database "MongoDB\n(Database)" as MongoDB
+
+User --> DeviceMonitor
+DeviceDaemon --> DeviceManager
+DeviceManager --> MongoDB
+DeviceMonitor --> DeviceManager
+
+@enduml
