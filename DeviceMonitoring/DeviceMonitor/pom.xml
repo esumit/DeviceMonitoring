@@ -8,7 +8,7 @@
     <name>device-monitor Maven Webapp</name>
     <url>http://maven.apache.org</url>
     <properties>
-        <spring.version>4.0.0.RELEASE</spring.version>
+        <spring.version>6.0.18</spring.version>
         <cxf.version>3.0.1</cxf.version>
         <jackson.version>2.0.1</jackson.version>
     </properties>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>

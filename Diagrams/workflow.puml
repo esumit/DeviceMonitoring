@@ -1,0 +1,31 @@
+@startuml
+
+actor User
+participant "MongoDB\nServer" as MongoDB
+participant DeviceDaemon
+participant DeviceManager
+participant "WebService\n(Tomcat)" as WebService
+participant Browser
+
+User -> MongoDB: Start MongoDB server\nCreate 'DeviceInfo' database\nand 'deviceInfo' collection
+User -> DeviceDaemon: Run DeviceDaemon\n(java -jar device-daemon.jar)
+User -> DeviceManager: Run DeviceManager\n(java -jar device-manager.jar)
+User -> WebService: Run WebService\n(mvn tomcat7:run)
+
+User -> Browser: Open browser\n(http://localhost:8080/)
+Browser -> WebService: Request Device-Monitor.html
+WebService -> Browser: Send Device-Monitor.html
+
+User -> Browser: Click 'Start' button
+alt Loop (every 60 seconds)
+    Browser -> WebService: Request DeviceInfo.json
+    WebService -> DeviceManager: Get latest DeviceInfo record
+    DeviceManager -> MongoDB: Fetch latest DeviceInfo record
+    MongoDB -> DeviceManager: Return DeviceInfo record
+    DeviceManager -> WebService: Send DeviceInfo record
+    WebService -> Browser: Send DeviceInfo.json
+    Browser -> User: Display device's process details
+end
+
+User -> Browser: Click 'Stop' button (optional)
+@enduml
