@@ -13,9 +13,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by eSumit on 10/27/15.
@@ -38,6 +45,21 @@ import java.util.LinkedList;
 public class DeviceProcessToJsonConverter {
 
     private static final Logger logger = LoggerFactory.getLogger(DeviceProcessToJsonConverter.class);
+    private static final Set<String> harmfulProcessNames = new HashSet<>();
+
+    static {
+        try (InputStream is = DeviceProcessToJsonConverter.class.getClassLoader().getResourceAsStream("harmful-processes.txt");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+            if (is == null) {
+                logger.error("Cannot find harmful-processes.txt");
+            } else {
+                harmfulProcessNames.addAll(reader.lines().map(String::trim).filter(line -> !line.isEmpty()).collect(Collectors.toSet()));
+                logger.info("Loaded " + harmfulProcessNames.size() + " harmful process names.");
+            }
+        } catch (IOException | NullPointerException e) {
+            logger.error("Error loading harmful-processes.txt", e);
+        }
+    }
 
     public String getDeviceProcessJsonFile() {
 
@@ -49,6 +71,25 @@ public class DeviceProcessToJsonConverter {
 
         DeviceProcessListParser deviceProcessListParser = new DeviceProcessListParser();
         LinkedList<DeviceProcess> listDeviceProcess = deviceProcessListParser.parseDeviceProcessList();
+
+        if (listDeviceProcess != null) {
+            for (DeviceProcess process : listDeviceProcess) {
+                if (process.getProcessName() != null) {
+                    String command = process.getProcessName().toLowerCase();
+                    boolean foundHarmful = false; // Flag to check if current process is harmful
+                    for (String harmfulName : harmfulProcessNames) {
+                        if (command.contains(harmfulName.toLowerCase())) {
+                            process.setHarmful(true);
+                            process.setDeviceProcessSeverity(com.esumit.daemon.device.deviceinfo.deviceprocessinfo.DeviceProcessSeverity.DANGER);
+                            foundHarmful = true;
+                            break;
+                        }
+                    }
+                    // If not found in harmful list, its severity remains NORMAL (default from constructor)
+                }
+            }
+        }
+
         DeviceProcessList deviceProcessList = new DeviceProcessList();
         deviceProcessList.makeProcessListTree(listDeviceProcess);
 

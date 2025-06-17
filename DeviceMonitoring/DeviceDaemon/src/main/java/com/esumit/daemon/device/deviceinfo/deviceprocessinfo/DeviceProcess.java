@@ -23,6 +23,7 @@ public class DeviceProcess {
     private LinkedList<DeviceProcess> childs;
     private ObjectMapper objectMapper;
     protected Environment environment;
+    private boolean isHarmful = false;
 
     public DeviceProcess() {
         this.processid = 0;
@@ -90,6 +91,14 @@ public class DeviceProcess {
 
     public void setChilds(LinkedList<DeviceProcess> childs) {
         this.childs = childs;
+    }
+
+    public boolean isHarmful() {
+        return isHarmful;
+    }
+
+    public void setHarmful(boolean harmful) {
+        isHarmful = harmful;
     }
 }
 

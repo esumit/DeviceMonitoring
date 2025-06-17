@@ -1,0 +1,4 @@
+bittorrent.exe
+frostwire.exe
+utorrent.exe
+miner
